@@ -1,3 +1,14 @@
 //anotações
 //npm init -y
 //npm install express ejs
+
+>node_modules
+>public
+-style.css
+>views
+-index.ejs
+-edit.ejs
+
+app.js
+package-lock.json
+package.json
