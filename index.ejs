@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD com EJS</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>CRUD - Lista de Itens</h1>
+
+    <form action="/add" method="POST">
+        <input type="text" name="item" placeholder="Adicionar novo item" required>
+        <button type="submit">Adicionar</button>
+    </form>
+    
+    <h2>Pesquisar Produto</h2>
+<input type="text" id="pesquisa" placeholder="Digite para pesquisar...">
+<button onclick="filtrarItens()">Buscar</button>
+
+<p id="mensagem" style="color: red;"></p> <!-- Mensagem de erro -->
+
+<h2>Itens</h2>
+<ul id="listaItens">
+    <% items.forEach((item, index) => { %>
+        <li class="item">
+            <%= item %> 
+            <a href="/edit/<%= index %>">Editar</a> | 
+            <a href="/delete/<%= index %>">Excluir</a>
+        </li>
+    <% }); %>
+</ul>
+
+
+    <p id="mensagem" style="color: red;"></p> <!-- Mensagem de erro -->
+
+        <script>
+    async function filtrarItens() {
+        let filtro = document.getElementById("pesquisa").value.trim();
+        let resposta = await fetch(`/search?q=${encodeURIComponent(filtro)}`);
+        let dados = await resposta.json();
+
+        let listaItens = document.getElementById("listaItens");
+        let mensagem = document.getElementById("mensagem");
+
+        listaItens.innerHTML = ""; // Limpar a lista
+        mensagem.textContent = ""; // Limpar mensagem anterior
+
+        if (dados.resultados.length === 0) {
+            mensagem.textContent = dados.mensagem;
+            return;
+        }
+
+        dados.resultados.forEach(obj => {
+            let li = document.createElement("li");
+            li.innerHTML = `
+                ${obj.nome} 
+                <a href="/edit/${obj.index}">Editar</a> | 
+                <a href="/delete/${obj.index}">Excluir</a>
+            `;
+            listaItens.appendChild(li);
+        });
+    }
+</script>
+
+</body>
+</html>
